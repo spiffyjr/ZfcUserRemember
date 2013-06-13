@@ -6,9 +6,10 @@ use Zend\Authentication\Result;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManagerInterface;
+use ZfcUser\Plugin\LoginPluginInterface;
 use ZfcUserRemember\Service\RememberService;
 
-class RememberPlugin extends AbstractListenerAggregate
+class LoginPlugin extends AbstractListenerAggregate implements LoginPluginInterface
 {
     /**
      * @var RememberService
@@ -34,10 +35,22 @@ class RememberPlugin extends AbstractListenerAggregate
     public function attach(EventManagerInterface $events)
     {
         // login service
-        $this->listeners[] = $events->attach('pre.login', array($this, 'prepareCookie'));
-        $this->listeners[] = $events->attach('post.login', array($this, 'setCookie'));
-        $this->listeners[] = $events->attach('pre.logout', array($this, 'clearCookies'));
-        $this->listeners[] = $events->attach('getLoginForm', array($this, 'prepareLoginForm'));
+        $this->listeners[] = $events->attach(
+            LoginPluginInterface::EVENT_PRE_LOGIN,
+            array($this, 'prepareCookie')
+        );
+        $this->listeners[] = $events->attach(
+            LoginPluginInterface::EVENT_POST_LOGIN,
+            array($this, 'setCookie')
+        );
+        $this->listeners[] = $events->attach(
+            LoginPluginInterface::EVENT_PRE_LOGOUT,
+            array($this, 'clearCookies')
+        );
+        $this->listeners[] = $events->attach(
+            LoginPluginInterface::EVENT_GET_LOGIN_FORM,
+            array($this, 'prepareLoginForm')
+        );
     }
 
     /**

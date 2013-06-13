@@ -11,7 +11,7 @@ return array(
 
     'zfc_user' => array(
         'login_plugins' => array(
-            'ZfcUserRemember\Plugin\RememberPlugin'
+            'ZfcUserRemember\Plugin\LoginPlugin'
         )
     )
 );

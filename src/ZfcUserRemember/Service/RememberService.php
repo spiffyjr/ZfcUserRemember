@@ -10,6 +10,7 @@ use ZfcUser\Service\AbstractEventService;
 use ZfcUserRemember\Authentication\RememberAdapter;
 use ZfcUserRemember\Entity\UserCookie;
 use ZfcUserRemember\Options\ModuleOptions;
+use ZfcUserRemember\Plugin\RememberPluginInterface;
 
 class RememberService extends AbstractEventService
 {
@@ -75,7 +76,10 @@ class RememberService extends AbstractEventService
         }
 
         $this->invalidateCookie();
-        $this->getEventManager()->trigger('clearCookies', $this->getAuthenticationService()->getIdentity());
+        $this->getEventManager()->trigger(
+            RememberPluginInterface::EVENT_LOGOUT,
+            $this->getAuthenticationService()->getIdentity()
+        );
     }
 
     /**
@@ -92,7 +96,7 @@ class RememberService extends AbstractEventService
 
         list($email, $token) = explode(':', $cookie->{RememberService::COOKIE_NAME});
 
-        $results    = $this->getEventManager()->trigger('getCookie', $token);
+        $results    = $this->getEventManager()->trigger(RememberPluginInterface::EVENT_GET_COOKIE, $token);
         $userCookie = $results->last();
 
         if (!$userCookie || !$userCookie->getUser()->getEmail() === $email) {
@@ -119,7 +123,7 @@ class RememberService extends AbstractEventService
         $cookie->setUser($user)
                ->setToken($token);
 
-        $this->getEventManager()->trigger('generateCookie', $cookie);
+        $this->getEventManager()->trigger(RememberPluginInterface::EVENT_GENERATE_COOKIE, $cookie);
     }
 
     /**
@@ -242,7 +246,7 @@ class RememberService extends AbstractEventService
 
         $userCookie = $this->getCookie();
         if ($userCookie) {
-            $this->getEventManager()->trigger('invalidateCookie', $userCookie);
+            $this->getEventManager()->trigger(RememberPluginInterface::EVENT_INVALIDATE_COOKIE, $userCookie);
         }
     }
 

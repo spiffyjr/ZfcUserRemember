@@ -5,7 +5,7 @@ namespace ZfcUserRemember\Plugin;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class RememberPluginFactory implements FactoryInterface
+class LoginPluginFactory implements FactoryInterface
 {
     /**
      * Create service
@@ -15,6 +15,6 @@ class RememberPluginFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return new RememberPlugin($serviceLocator->get('ZfcUserRemember\Service\RememberService'));
+        return new LoginPlugin($serviceLocator->get('ZfcUserRemember\Service\RememberService'));
     }
 }
