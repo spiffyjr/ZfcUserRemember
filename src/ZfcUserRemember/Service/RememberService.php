@@ -6,13 +6,13 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Result;
 use Zend\Http;
 use ZfcUser\Entity\UserInterface;
-use ZfcUser\Service\AbstractEventService;
+use ZfcUser\Service\AbstractPluginService;
 use ZfcUserRemember\Authentication\RememberAdapter;
 use ZfcUserRemember\Entity\UserCookie;
 use ZfcUserRemember\Options\ModuleOptions;
 use ZfcUserRemember\Plugin\RememberPluginInterface;
 
-class RememberService extends AbstractEventService
+class RememberService extends AbstractPluginService
 {
     const COOKIE_NAME = 'remember';
 
@@ -40,6 +40,13 @@ class RememberService extends AbstractEventService
      * @var Http\Response
      */
     protected $response;
+
+    /**
+     * @var array
+     */
+    protected $allowedPluginInterfaces = array(
+        'ZfcUserRemember\Plugin\RememberPluginInterface'
+    );
 
     /**
      * Authenticates a user via cookie if enabled and the cookie exists.
