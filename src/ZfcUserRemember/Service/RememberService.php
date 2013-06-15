@@ -8,7 +8,6 @@ use Zend\Http;
 use ZfcUser\Entity\UserInterface;
 use ZfcUser\Service\AbstractPluginService;
 use ZfcUserRemember\Authentication\RememberAdapter;
-use ZfcUserRemember\Entity\UserCookie;
 use ZfcUserRemember\Options\ModuleOptions;
 use ZfcUserRemember\Plugin\RememberPluginInterface;
 
@@ -25,6 +24,11 @@ class RememberService extends AbstractPluginService
      * @var AuthenticationService
      */
     protected $authService;
+
+    /**
+     * @var \ZfcUserRemember\Entity\UserCookieInterface;
+     */
+    protected $cookiePrototype;
 
     /**
      * @var ModuleOptions
@@ -126,7 +130,7 @@ class RememberService extends AbstractPluginService
 
         $this->getResponse()->getHeaders()->addHeader($setCookie);
 
-        $cookie = new UserCookie();
+        $cookie = $this->getCookiePrototype();
         $cookie->setUser($user)
                ->setToken($token);
 
@@ -236,6 +240,23 @@ class RememberService extends AbstractPluginService
             $this->authService = new AuthenticationService();
         }
         return $this->authService;
+    }
+
+    /**
+     * @return \ZfcUserRemember\Entity\UserCookieInterface
+     */
+    public function getCookiePrototype()
+    {
+        if (!$this->cookiePrototype) {
+            $userClass = $this->options->getCookieClass();
+            if (!class_exists($userClass)) {
+                // todo: throw exception
+                echo 'userclass ' . $userClass . ' could not be found';
+                exit;
+            }
+            $this->cookiePrototype = new $userClass();
+        }
+        return $this->cookiePrototype;
     }
 
     /**

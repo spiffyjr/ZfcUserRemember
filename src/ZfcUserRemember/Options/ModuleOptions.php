@@ -7,6 +7,11 @@ use Zend\Stdlib\AbstractOptions;
 class ModuleOptions extends AbstractOptions
 {
     /**
+     * @var string
+     */
+    protected $cookieClass;
+
+    /**
      * @var array
      */
     protected $plugins = array();
@@ -24,6 +29,24 @@ class ModuleOptions extends AbstractOptions
      * @var string
      */
     protected $salt = 'default_salt_is_bad';
+
+    /**
+     * @param string $cookieClass
+     * @return ModuleOptions
+     */
+    public function setCookieClass($cookieClass)
+    {
+        $this->cookieClass = $cookieClass;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCookieClass()
+    {
+        return $this->cookieClass;
+    }
 
     /**
      * @param int $duration
