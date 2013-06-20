@@ -48,7 +48,7 @@ class LoginPlugin extends AbstractListenerAggregate implements LoginPluginInterf
             array($this, 'clearCookies')
         );
         $this->listeners[] = $events->attach(
-            LoginPluginInterface::EVENT_GET_LOGIN_FORM,
+            LoginPluginInterface::EVENT_PREPARE_FORM,
             array($this, 'prepareLoginForm')
         );
     }
