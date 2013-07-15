@@ -2,7 +2,6 @@
 
 namespace ZfcUserRemember;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Zend\EventManager\EventInterface;
 use Zend\EventManager\EventManagerInterface;
 use ZfcUser\Entity\UserInterface;
@@ -12,19 +11,6 @@ use ZfcUserRemember\Entity\UserCookieInterface;
 
 class DoctrineExtension extends AbstractExtension
 {
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @param ObjectManager $objectManager
-     */
-    public function __construct(ObjectManager $objectManager)
-    {
-        $this->objectManager = $objectManager;
-    }
-
     /**
      * @return string
      */
@@ -38,6 +24,11 @@ class DoctrineExtension extends AbstractExtension
      */
     public function attach(EventManagerInterface $events)
     {
+        // disable extension if doctrine extension is not present
+        if (!$this->getManager()->has('doctrine')) {
+            return;
+        }
+
         $this->listeners[] = $events->attach(Authentication::EVENT_LOGOUT_POST, array($this, 'onLogout'));
         $this->listeners[] = $events->attach(Extension::EVENT_GET_COOKIE, array($this, 'onGetCookie'));
         $this->listeners[] = $events->attach(Extension::EVENT_GENERATE_COOKIE, array($this, 'onGenerateCookie'));
@@ -53,8 +44,9 @@ class DoctrineExtension extends AbstractExtension
         if (!$cookie instanceof UserCookieInterface) {
             return;
         }
-        $this->objectManager->persist($event->getTarget());
-        $this->objectManager->flush();
+        $om = $this->getObjectManager();
+        $om->persist($event->getTarget());
+        $om->flush();
     }
 
     /**
@@ -68,8 +60,10 @@ class DoctrineExtension extends AbstractExtension
             echo 'unexpected value 2';
             exit;
         }
-        $this->objectManager->remove($event->getTarget());
-        $this->objectManager->flush();
+
+        $om = $this->getObjectManager();
+        $om->remove($event->getTarget());
+        $om->flush();
     }
 
     /**
@@ -96,19 +90,30 @@ class DoctrineExtension extends AbstractExtension
             return;
         }
 
+        $om      = $this->getObjectManager();
         $cookies = $this->getObjectRepository()->findAll();
         foreach ($cookies as $cookie) {
-            $this->objectManager->remove($cookie);
+            $om->remove($cookie);
         }
-        $this->objectManager->flush();
+        $om->flush();
     }
 
     /**
      * @return \Doctrine\Common\Persistence\ObjectRepository
      */
-    protected function getObjectRepository()
+    public function getObjectRepository()
     {
         $remember = $this->getManager()->get('remember');
-        return $this->objectManager->getRepository($remember->getOption('entity_class'));
+        return $this->getObjectManager()->getRepository($remember->getOption('entity_class'));
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\ObjectManager
+     */
+    protected function getObjectManager()
+    {
+        /** @var \ZfcUserDoctrineORM\Extension $doctrine */
+        $doctrine = $this->getManager()->get('doctrine');
+        return $doctrine->getObjectManager();
     }
 }
