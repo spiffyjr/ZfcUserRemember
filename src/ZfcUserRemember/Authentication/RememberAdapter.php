@@ -5,7 +5,7 @@ namespace ZfcUserRemember\Authentication;
 use Zend\Authentication\Adapter\AdapterInterface;
 use Zend\Authentication\Result;
 use Zend\Http\Request;
-use ZfcUserRemember\Service\RememberService;
+use ZfcUserRemember\Extension as RememberExtension;
 
 class RememberAdapter implements AdapterInterface
 {
@@ -13,16 +13,16 @@ class RememberAdapter implements AdapterInterface
     const FAILURE_INVALID  = -6;
 
     /**
-     * @var RememberService
+     * @var RememberExtension
      */
-    protected $service;
+    protected $extension;
 
     /**
-     * @param RememberService $service
+     * @param RememberExtension $extension
      */
-    public function __construct(RememberService $service)
+    public function __construct(RememberExtension $extension)
     {
-        $this->service = $service;
+        $this->extension = $extension;
     }
 
     /**
@@ -30,7 +30,7 @@ class RememberAdapter implements AdapterInterface
      */
     public function authenticate()
     {
-        $userCookie = $this->service->getCookie();
+        $userCookie = $this->extension->getCookie();
         if (!$userCookie) {
             return new Result(self::FAILURE_INVALID, null, array('No cookie present'));
         }

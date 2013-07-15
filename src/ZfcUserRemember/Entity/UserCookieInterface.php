@@ -7,17 +7,6 @@ use ZfcUser\Entity\UserInterface;
 interface UserCookieInterface
 {
     /**
-     * @param int $id
-     * @return UserCookieInterface
-     */
-    public function setId($id);
-
-    /**
-     * @return int
-     */
-    public function getId();
-
-    /**
      * @param int $token
      * @return UserCookieInterface
      */

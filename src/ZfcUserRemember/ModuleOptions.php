@@ -1,6 +1,6 @@
 <?php
 
-namespace ZfcUserRemember\Options;
+namespace ZfcUserRemember;
 
 use Zend\Stdlib\AbstractOptions;
 

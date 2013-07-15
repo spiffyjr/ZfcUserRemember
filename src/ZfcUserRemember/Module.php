@@ -25,8 +25,8 @@ class Module implements
 
         $request = $sm->get('Request');
         if ($request instanceof HttpRequest) {
-            $rememberService = $sm->get('ZfcUserRemember\Service\RememberService');
-            $rememberService->login();
+            $manager = $sm->get('ZfcUser\Extension\Manager');
+            $manager->get('remember')->login();
         }
     }
 
