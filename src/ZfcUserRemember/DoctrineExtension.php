@@ -112,7 +112,7 @@ class DoctrineExtension extends AbstractExtension
      */
     protected function getObjectManager()
     {
-        /** @var \ZfcUserDoctrineORM\Extension $doctrine */
+        /** @var \ZfcUserDoctrine\Extension $doctrine */
         $doctrine = $this->getManager()->get('doctrine');
         return $doctrine->getObjectManager();
     }
