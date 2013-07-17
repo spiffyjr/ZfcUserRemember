@@ -31,11 +31,4 @@ return array(
             'remember_doctrine' => 'ZfcUserRemember\DoctrineExtension',
         )
     ),
-
-    'zfc_user_remember' => array(
-        'cookie_class' => 'ZfcUserRemember\Entity\UserCookie',
-        'plugins' => array(
-            'ZfcUserRemember\Plugin\DoctrineORMPlugin',
-        )
-    )
 );
